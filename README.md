@@ -22,3 +22,10 @@ The deliberate trade-off is that header names are returned with their original c
 A blank line in the input terminates parsing, matching the HTTP framing rule that a blank line separates headers from the body. If you feed `parse_headers` a full HTTP message, the body is ignored — which is usually what you want, but will surprise you if you expected it to parse past the blank line.
 
 `fold_headers` emits obs-fold output, which is deprecated. It exists for talking to legacy systems; prefer single-line headers for new code.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
